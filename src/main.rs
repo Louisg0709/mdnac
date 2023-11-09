@@ -73,11 +73,12 @@ impl MdncGame{
                     if vector_subtract(pos1, pos2) == vector_subtract(pos22, pos3){return true}
                 }
             }
+            // Check out this bit cause its not walways working
             if slot - 2 * i >= 0{
                 if self.grid[(slot - 2 * i) as usize] == player && self.grid[(slot - i) as usize] == player && self.grid[slot as usize] == player{
-                    let pos1 = single_to_multi(slot - 2 * i, self.num_dimensions);
-                    let pos2 = single_to_multi(- i, self.num_dimensions);
-                    let pos22 = single_to_multi(- i, self.num_dimensions);
+                    let pos1 = single_to_multi(slot-2*i, self.num_dimensions);
+                    let pos2 = single_to_multi(slot - i, self.num_dimensions);
+                    let pos22 = single_to_multi(slot - i, self.num_dimensions);
                     let pos3 = single_to_multi(slot, self.num_dimensions);
                     if vector_subtract(pos1, pos2) == vector_subtract(pos22, pos3){return true}
                 }
@@ -128,11 +129,12 @@ fn main() {
     let mut previous_moves:Vec<Vec<i8>> = Vec::new();
     loop{
         for i in 1..=game.num_players{
+            println!();
+            println!("Previous moves:{:?}",previous_moves);
             let mut new_coords = Vec::new();
             let mut new_coords2 = Vec::new();
             let mut new_coords3 = Vec::new();
             for i2 in 0..game.num_dimensions{
-                println!("Previous moves:{:?}",previous_moves);
                 print!("Player {:?}, where would you like move on axis {:?}? ", i, i2);
                 io::stdout().flush().unwrap();
                 let mut ans = String::new();
