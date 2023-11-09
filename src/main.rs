@@ -1,4 +1,10 @@
 //Struct containing all important game info
+fn clamp(x:i8, min:i8, max:i8) -> i8{
+    if x < min{return min}
+    if x > max{return max}
+    x
+}
+
 fn vector_subtract(x: Vec<i8>, y: Vec<i8>) -> Vec<i8>{
     let mut new_vec: Vec<i8> = Vec::new();
     for i in 0..x.len(){
@@ -51,7 +57,7 @@ impl MdncGame{
 
    fn check_for_line(&self, slot: i32, player: i8) -> bool{
         let max = (3 as i32).pow(self.num_dimensions as u32);
-        for i in 0..max{
+        for i in 1..max{
             if slot - i >= 0 && slot + i < max {
                 if self.grid[(slot - i) as usize] == player && self.grid[slot as usize] == player && self.grid[(slot+i) as usize] == player{
                     let pos1 = single_to_multi(slot - i, self.num_dimensions);
@@ -81,17 +87,54 @@ impl MdncGame{
             }
             
         }
-        return false
+        false
    }
 }
 
 fn main() {
     println!("Hi, Welcome to Multi-Dimensional Noughts and Crosses!");
 
+    let mut nplayers: i8;
+    println!("How many people want to play?");
+    let mut string = String::new();
+    let _z = std::io::stdin().read_line(&mut string);
+    nplayers = string.trim().parse::<i8>().expect("Please input only digits");
+    
+    let mut ndimensions: i8;
+    println!("How many dimensions do you want to enable? (must be int)");
+    let mut string = String::new();
+    let _z = std::io::stdin().read_line(&mut string);
+    ndimensions = string.trim().parse::<i8>().expect("Please input number below 127");
+
+    ndimensions = clamp(ndimensions, 1, 127);
+    nplayers = clamp(nplayers, 1, 127);
+
     let mut game = MdncGame{
         grid: Vec::new(),
-        num_dimensions: 2,
-        num_players: 1
+        num_dimensions: ndimensions,
+        num_players: nplayers
     };
     game = game.generate_grid();
+
+    let mut playing = true;
+
+    while playing{
+        for i in 1..=game.num_players{
+            let mut new_coords = Vec::new();
+            let mut new_coords2 = Vec::new();
+            for i2 in 0..game.num_dimensions{
+                println!("Player {:?}, where would you like move on axis {:?}?", i, i2);
+                let mut ans = String::new();
+                let _y = std::io::stdin().read_line(&mut ans);
+                new_coords.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+                new_coords2.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+            }
+            game.grid[(multi_to_single(new_coords)) as usize] = i;
+            if game.check_for_line(multi_to_single(new_coords2), i){
+                println!("Player {:?} wins!",i);
+                println!("Grid: {:?}", game.grid);
+                std::process::exit(0);
+             }
+        }
+    }
 }
