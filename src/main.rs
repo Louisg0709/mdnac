@@ -73,7 +73,7 @@ impl MdncGame{
                     if vector_subtract(pos1, pos2) == vector_subtract(pos22, pos3){return true}
                 }
             }
-            // Check out this bit cause its not walways working
+            
             if slot - 2 * i >= 0{
                 if self.grid[(slot - 2 * i) as usize] == player && self.grid[(slot - i) as usize] == player && self.grid[slot as usize] == player{
                     let pos1 = single_to_multi(slot-2*i, self.num_dimensions);
@@ -131,17 +131,32 @@ fn main() {
         for i in 1..=game.num_players{
             println!();
             println!("Previous moves:{:?}",previous_moves);
+            
             let mut new_coords = Vec::new();
             let mut new_coords2 = Vec::new();
             let mut new_coords3 = Vec::new();
-            for i2 in 0..game.num_dimensions{
-                print!("Player {:?}, where would you like move on axis {:?}? ", i, i2);
-                io::stdout().flush().unwrap();
-                let mut ans = String::new();
-                let _y = io::stdin().read_line(&mut ans);
-                new_coords.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
-                new_coords2.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
-                new_coords3.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+
+            let mut asking = true;
+            while asking{
+                let mut new_coords4 = Vec::new();
+                for i2 in 0..game.num_dimensions{
+                    print!("Player {:?}, where would you like move on axis {:?}? ", i, i2);
+                    io::stdout().flush().unwrap();
+                    let mut ans = String::new();
+                    let _y = io::stdin().read_line(&mut ans);
+                    new_coords.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+                    new_coords2.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+                    new_coords3.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+                    new_coords4.push(clamp(ans.trim().parse::<i8>().expect("Please input number below 127"),0,2));
+                }
+                if game.grid[(multi_to_single( new_coords4)) as usize] == 0{asking = false}
+                else{
+                    println!("This slot is taken! Please input again.");
+                    new_coords = Vec::new();
+                    new_coords2 = Vec::new();
+                    new_coords3 = Vec::new();
+                    
+                }
             }
             game.grid[(multi_to_single(new_coords)) as usize] = i;
             new_coords3.push(i);
