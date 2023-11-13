@@ -57,10 +57,10 @@ impl MdncGame{
         let max = max_size.pow(self.num_dimensions as u32);
         println!("Started grid gen");
         for i in 0i64..max_size.pow(self.num_dimensions as u32){
-            println!("Loaded {:?}%", ((i as f64)/(max as f64) * 100f64).trunc());
+            println!("Loaded {:?}%", ((i as f64)/(max as f64) * 100f64).trunc() as i64);
             new_grid.push(0);
         }
-        println!("Loaded 100.0%");
+        println!("Loaded 100%");
         MdncGame{grid: new_grid, num_dimensions: self.num_dimensions, num_players: self.num_players}
     }
 
