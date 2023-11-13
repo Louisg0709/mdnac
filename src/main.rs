@@ -12,6 +12,7 @@ fn clamp(x:i8, min:i8, max:i8) -> i8{
 }
 
 fn vector_subtract(x: Vec<i8>, y: Vec<i8>) -> Vec<i8>{
+    //assumes both vectors are same size
     let mut new_vec: Vec<i8> = Vec::new();
     for i in 0..x.len(){
         new_vec.push(x[i]-y[i]);
@@ -52,12 +53,14 @@ impl MdncGame{
     fn generate_grid(&self) -> MdncGame{
 
         let mut new_grid: Vec<i8> = Vec::new();
-        let max_size: i8 = 3;
-
-        for _i in 0..max_size.pow(self.num_dimensions as u32){
+        let max_size: i64 = 3;
+        let max = max_size.pow(self.num_dimensions as u32);
+        println!("Started grid gen");
+        for i in 0i64..max_size.pow(self.num_dimensions as u32){
+            println!("Loaded {:?}%", ((i as f64)/(max as f64) * 100f64).trunc());
             new_grid.push(0);
         }
-
+        println!("Loaded 100.0%");
         MdncGame{grid: new_grid, num_dimensions: self.num_dimensions, num_players: self.num_players}
     }
 
@@ -163,7 +166,7 @@ fn main() {
             previous_moves.push(new_coords3);
             if game.check_for_line(multi_to_single(new_coords2), i){
                 println!("Player {:?} wins!",i);
-                println!("Grid: {:?}", game.grid);
+                //println!("Grid: {:?}", game.grid);
                 std::process::exit(0);
              }
         }
